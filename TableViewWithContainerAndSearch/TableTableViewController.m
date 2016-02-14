@@ -49,10 +49,43 @@
     self.tableView.contentOffset = offset;
 //    self.tableView.bounces = YES;
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(needToScroll:)
+                                                 name:@"scrollMan"
+                                               object:nil];
+
 
    }
 
+- (void) needToScroll:(NSNotification *) notification{
+    
+    NSDictionary *data = [notification userInfo];
+    NSNumber *offset = [data objectForKey:@"offset"];
+    float y = [offset floatValue];
+    
+    CGPoint tvOffest = self.tableView.contentOffset;
+    
+     NSLog([NSString stringWithFormat:@"Offset new: %f", tvOffest.y ]);
 
+    
+    // SearBar appear
+    if(y < 0 && y >= -64){
+        if(tvOffest.y <=0 && tvOffest.y > -64){
+            tvOffest.y = MAX(tvOffest.y + y, -64);
+            self.tableView.contentOffset = tvOffest;
+            return;
+        }
+    }
+    
+    if( y > 0){
+        if(tvOffest.y <-20 && tvOffest.y >= -64){
+            tvOffest.y = MIN(tvOffest.y + y, -20);
+            self.tableView.contentOffset = tvOffest;
+            return;
+        }
+    }
+
+}
 
 #pragma mark - Table view data source
 

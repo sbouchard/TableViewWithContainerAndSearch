@@ -18,10 +18,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.tableView.bounces = NO;
+    self.tableView.bounces = YES;
     
-    [self.tableView setDelaysContentTouches:YES];
-   [self.tableView setCanCancelContentTouches:NO];
+//    [self.tableView setDelaysContentTouches:YES];
+//   [self.tableView setCanCancelContentTouches:NO];
     
   //  self.tableView.panGestureRecognizer.delaysTouchesBegan = YES;
 }
@@ -71,9 +71,9 @@
 //        self.otterTV.contentOffset = offset;
 //    }
     
-//
-//        NSNumber *offset = [NSNumber numberWithFloat:scrollView.contentOffset.y];
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollMan" object:nil userInfo:@{@"offset":offset}];
+
+        NSNumber *offset = [NSNumber numberWithFloat:scrollView.contentOffset.y];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollMan" object:nil userInfo:@{@"offset":offset}];
 
 //    if(scrollView.contentOffset.y > 0){
 //        self.tableView.scrollEnabled = YES;
