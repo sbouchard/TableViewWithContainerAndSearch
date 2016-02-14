@@ -9,7 +9,7 @@
 
 #import "ComplteListTableViewController.h"
 
-@interface ComplteListTableViewController ()<UIGestureRecognizerDelegate>
+@interface ComplteListTableViewController () <UIScrollViewDelegate>
 
 @end
 
@@ -17,46 +17,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.tableView.bounces = NO;
     
-    //register to listen for event
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(eventHandler:)
-     name:@"scroll"
-     object:nil ];
+    [self.tableView setDelaysContentTouches:YES];
+   [self.tableView setCanCancelContentTouches:NO];
     
-
+  //  self.tableView.panGestureRecognizer.delaysTouchesBegan = YES;
 }
-
-//event handler when event occurs
--(void)eventHandler: (NSNotification *) notification
-{
-    self.tableView.scrollEnabled = YES;
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void)panOccured:(UIPanGestureRecognizer *)sender
-{
-    
-}
-
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
-    if(self.tableView.contentOffset.y < 0){
-        
-        self.tableView.scrollEnabled = NO;
-        
-    }
-}
-
-
-
-
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -64,7 +32,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 50;
+    return 200;
 }
 
 
@@ -74,6 +42,46 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    
+    
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UITableViewController* resultCtrl = [sb instantiateViewControllerWithIdentifier:@"detailCtrl"];
+    
+    
+    if(self.navigationController){
+        [self.navigationController pushViewController:resultCtrl animated:YES];
+    }
+    else{
+        [self.navController pushViewController:resultCtrl animated:YES];
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+//    NSLog([NSString stringWithFormat:@"Offset: %f", scrollView.contentOffset.y ]);
+//    if(scrollView.contentOffset.y <=0){
+//        CGPoint offset = self.otterTV.contentOffset ; // both tables have same offset so use anyone for reference
+//        offset.y = offset.y-scrollView.contentOffset.y ;
+//        self.otterTV.contentOffset = offset;
+//    }
+    
+//
+//        NSNumber *offset = [NSNumber numberWithFloat:scrollView.contentOffset.y];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollMan" object:nil userInfo:@{@"offset":offset}];
+
+//    if(scrollView.contentOffset.y > 0){
+//        self.tableView.scrollEnabled = YES;
+//    }else{
+//        self.tableView.scrollEnabled = NO;
+//    }
+    
+//    self.resultCtrl.tableView.scrollEnabled=YES;
 }
 
 @end

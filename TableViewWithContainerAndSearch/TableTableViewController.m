@@ -10,10 +10,11 @@
 #import "ComplteListTableViewController.h"
 #import "VCPContainerViewController.h"
 
-@interface TableTableViewController () <UIGestureRecognizerDelegate, UISearchControllerDelegate, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating>
+@interface TableTableViewController () <UIGestureRecognizerDelegate, UISearchControllerDelegate, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating, UIScrollViewDelegate >
 @property (weak, nonatomic) IBOutlet VCPContainerViewController *ctrlContainer;
 
 @property (strong, nonatomic) UISearchController *searchController;
+@property (strong, nonatomic) ComplteListTableViewController* resultCtrl;
 
 @end
 
@@ -23,24 +24,35 @@
     [super viewDidLoad];
     
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    ComplteListTableViewController* resultCtrl = [sb instantiateViewControllerWithIdentifier:@"completeCtrl"];
+    self.resultCtrl = [sb instantiateViewControllerWithIdentifier:@"completeCtrl"];
+    self.resultCtrl.navController = self.navigationController;
+    self.resultCtrl.otterTV = self.tableView;
     
-    self.searchController = [[UISearchController alloc] initWithSearchResultsController:resultCtrl];
+    
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:self.resultCtrl];
     self.searchController.searchResultsUpdater = self;
-    self.searchController.dimsBackgroundDuringPresentation = NO;
+    self.searchController.dimsBackgroundDuringPresentation = YES;
 
     self.searchController.searchBar.delegate = self;
     
     self.tableView.tableHeaderView = self.searchController.searchBar;
-//    self.definesPresentationContext = YES;
+    self.definesPresentationContext = YES;
     
     [self.searchController.searchBar sizeToFit];
-}
+    
+//    UIPanGestureRecognizer*   swipeGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:nil];
+//    swipeGesture.delegate = self;
+//    [self.tableView addGestureRecognizer:swipeGesture];
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+    // scroll just past the search bar initially
+    CGPoint offset = CGPointMake(0, self.searchController.searchBar.frame.size.height);
+    self.tableView.contentOffset = offset;
+//    self.tableView.bounces = YES;
+
+
+   }
+
+
 
 #pragma mark - Table view data source
 
@@ -56,8 +68,7 @@
 
 -(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     
-    UIView *sectionHeader = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 100)];
-    [sectionHeader setBackgroundColor:[UIColor purpleColor]];
+    UIView *sectionHeader = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 50)];
     
     
     NSArray *itemArray = [NSArray arrayWithObjects: @"List one", @"List two", nil];
@@ -85,21 +96,75 @@
     [self.ctrlContainer swapViewControllers];
 }
 
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
-    if(scrollView.contentOffset.y < 1){
-        
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"scroll"
-         object:nil ];
-        
-    }
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+ //   NSLog([NSString stringWithFormat:@"Up: %f ", scrollView.contentOffset.y]);
+//
+//    if(scrollView.contentOffset.y >= -20){
+//        TableTableViewController* __weak weakSelf = self;
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//            weakSelf.resultCtrl.tableView.scrollEnabled=YES;
+//        });
+//    }
 }
+
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
 
 }
+
+
+- (BOOL) gestureRecognizer: (UIGestureRecognizer*)gestureRecognizer
+shouldRecognizeSimultaneouslyWithGestureRecognizer: (UIGestureRecognizer*)otherGestureRecognizer
+{
+    
+    float var2 = self.tableView.contentOffset.y;
+    if ([gestureRecognizer isKindOfClass: [UIPanGestureRecognizer class]])
+    {
+//
+//
+    }
+    
+//    if(self.tableView.contentOffset.y == -20){
+//        NSLog(@"Ijjer Scroll OFF");
+//        TableTableViewController* __weak weakSelf = self;
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//            [weakSelf.resultCtrl canScroll:NO];
+//        });
+//    }else{
+//         NSLog([NSString stringWithFormat:@"Up: %f ", var2]);
+//         [self.resultCtrl.tableView setUserInteractionEnabled:YES];
+//    }
+//    
+//
+//
+//
+//        
+//        
+////        if ([((UIPanGestureRecognizer*)gestureRecognizer) velocityInView: self.tableView].y > 0){
+////            //Up
+////            NSLog([NSString stringWithFormat:@"Up: %f ", var2]);
+////            if(self.tableView.contentOffset.y == 0){
+////                return NO;
+////            }
+////            
+////        }else{
+////            //Down
+////            NSLog([NSString stringWithFormat:@"Down: %f ", var2]);
+////            return YES;
+////        }
+//        
+//        
+//    }
+//    
+//
+    
+//    NSLog(@"Outer Scroll delegate");
+    return YES;
+}
+
+
+
 
 @end

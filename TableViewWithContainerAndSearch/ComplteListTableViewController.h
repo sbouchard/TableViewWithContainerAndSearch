@@ -9,5 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface ComplteListTableViewController : UITableViewController
+@property (nonatomic, strong) UINavigationController *navController;
+@property (nonatomic, strong) UITableView *otterTV;
 
+-(void) canScroll:(BOOL)canScroll;
 @end
